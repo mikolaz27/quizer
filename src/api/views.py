@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import (CustomerSerializer, QuestionSerializer,
                              QuizSerializer)
+from core.permissions import IsSuperUser
 from quiz.models import Question, Quiz
 
 
@@ -13,6 +15,7 @@ class CustomerViewSet(ModelViewSet):
 
 
 class QuestionDetailView(RetrieveAPIView):
+    # permission_classes = [AllowAny]
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
@@ -23,5 +26,6 @@ class QuestionDetailView(RetrieveAPIView):
 
 
 class QuizListView(ListAPIView):
+    permission_classes = [IsSuperUser]
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer

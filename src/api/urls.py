@@ -32,6 +32,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("auth/", include("djoser.urls.jwt")),
     path("docs/", schema_view.with_ui("swagger", cache_timeout=0), name="swagger_docs"),
     path("quiz/<int:pk>/question/<int:order>/", QuestionDetailView.as_view(), name="question_detail"),
     path("quiz/", QuizListView.as_view(), name="quiz_list"),
