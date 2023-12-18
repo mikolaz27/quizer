@@ -121,3 +121,10 @@ DJOSER = {
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",
 }
+
+# 1. Процес розробки швидший
+# 2. Інкапсуляція
+# 3. Передбачувана поведінка на всіх етапах розробки
+# 4. Моніторинг
+# 5. Можливість масштабування
+# 6. Уніфікація процесу
