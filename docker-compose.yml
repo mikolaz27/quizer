@@ -1,0 +1,43 @@
+version: '3'
+
+#docker run --rm -it -p 8010:8000 -v D:\Hillel\quizer\quizer\src:/quizer/src
+#  --name quizer_cont quizer_image ./commands/start_server_dev.sh
+
+
+
+services:
+  backend:
+    #    image: quizer_image
+    build: ./
+    container_name: quizer_container
+    working_dir: /quizer
+    ports:
+      - 8010:8000
+    volumes:
+      - ./src:/quizer/src
+      - ./commands:/quizer/commands
+    command:
+      - ./commands/start_server_dev.sh
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16.1
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  pg_data: { }
+
+#  database:
+#    ...
+#  redis:
+#    ...
+#  cache:
+#    ...
