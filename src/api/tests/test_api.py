@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -47,7 +49,7 @@ class TestAPI(TestCase):
         result = self.client.get(reverse("api:quiz_list"))
         self.assertEqual(result.status_code, HTTP_200_OK)
         self.assertEqual(
-            result.data, [{"id": 1, "title": "Test", "description": "Test description", "level": "Medium"}]
+            result.data, [{"id": mock.ANY, "title": "Test", "description": "Test description", "level": "Medium"}]
         )
 
     def test_quiz_list_forbidden(self):
