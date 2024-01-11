@@ -7,7 +7,7 @@ services:
     container_name: quizer_container
     working_dir: /quizer
     ports:
-      - 8010:8000
+      - ${LOCAL_PORT}:${WSGI_PORT}
     volumes:
       - ./src:/quizer/src
       - ./commands:/quizer/commands
@@ -80,6 +80,51 @@ services:
       - .env
     depends_on:
       - backend
+
+  redis:
+    image: redis
+    env_file:
+      - .env
+    restart: on-failure
+    depends_on:
+      - backend
+
+  redisadmin:
+    image: redislabs/redisinsight
+    container_name: redis_admin
+    restart: on-failure
+    ports:
+      - 8001:8001
+    env_file:
+      - .env
+
+  celery:
+    build: ./
+    container_name: celery_container
+    command:
+      - ./commands/start_celery.sh
+    restart: on-failure
+    volumes:
+      - ./src:/quizer
+      - ./commands:/quizer/commands
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - backend
+
+  flower:
+    build: ./
+    container_name: flower_container
+    volumes:
+      - ./src:/quizer
+    env_file:
+      - .env
+    command: celery -A config flower --broker=redis://redis
+    ports:
+      - 5555:5555
+    depends_on:
+      - celery
 
 volumes:
   static_content: { }

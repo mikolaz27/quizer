@@ -1,6 +1,3 @@
-import datetime
-
-from django.db import models
 from django.utils import timezone
 from mongoengine import (DateTimeField, Document, EmbeddedDocument,
                          EmbeddedDocumentField, IntField, ListField,
