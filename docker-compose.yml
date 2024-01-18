@@ -1,0 +1,135 @@
+version: '3'
+
+
+services:
+  backend:
+    build: ./
+    container_name: quizer_container
+    working_dir: /quizer
+    ports:
+      - ${LOCAL_PORT}:${WSGI_PORT}
+    volumes:
+      - ./src:/quizer/src
+      - ./commands:/quizer/commands
+      - static_content:/quizer/src/static
+      - media_content:/quizer/src/media
+    command:
+      - ./commands/start_server_${MODE}.sh
+    env_file:
+      - .env
+#    depends_on:
+#      - postgres
+
+#  postgres:
+#    image: postgres:16.1
+#    ports:
+#      - 5432:5432
+#    volumes:
+#      - pg_data:/var/lib/postgresql/data
+#    env_file:
+#      - .env
+
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    container_name: pgadmin_container
+#    restart: on-failure
+#    ports:
+#      - 5000:80
+#    volumes:
+#      - pgadmin_data:/var/lib/pgadmin
+#    env_file:
+#      - .env
+#    depends_on:
+#      - postgres
+#
+#  mongodb:
+#    image: mongo:3-stretch
+#    container_name: mongo_db_container
+#    command: [ "--bind_ip_all", "--smallfiles" ]
+#    ports:
+#      - 27017:27017
+#    volumes:
+#      - mongo_data:/data/db
+#    env_file:
+#      - .env
+#    restart: on-failure
+#
+#  mongoadmin:
+#    image: mongo-express
+#    restart: on-failure
+#    container_name: mongo_admin_container
+#    ports:
+#      - 8091:8081
+#    env_file:
+#      - .env
+#    links:
+#      - mongodb
+#    depends_on:
+#      - mongodb
+
+  nginx:
+    image: nginx:1.19
+    volumes:
+      - static_content:/quizer/src/static
+      - media_content:/quizer/src/media
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+      - .env
+    depends_on:
+      - backend
+
+#  redis:
+#    image: redis
+#    env_file:
+#      - .env
+#    restart: on-failure
+#    depends_on:
+#      - backend
+#
+#  redisadmin:
+#    image: redislabs/redisinsight
+#    container_name: redis_admin
+#    restart: on-failure
+#    ports:
+#      - 8001:8001
+#    env_file:
+#      - .env
+#
+#  celery:
+#    build: ./
+#    container_name: celery_container
+#    command:
+#      - ./commands/start_celery.sh
+#    restart: on-failure
+#    volumes:
+#      - ./src:/quizer
+#      - ./commands:/quizer/commands
+#    env_file:
+#      - .env
+#    depends_on:
+#      - redis
+#      - backend
+#
+#  flower:
+#    build: ./
+#    container_name: flower_container
+#    volumes:
+#      - ./src:/quizer
+#    env_file:
+#      - .env
+#    command: celery -A config flower --broker=redis://redis
+#    ports:
+#      - 5555:5555
+#    depends_on:
+#      - celery
+
+volumes:
+  static_content: { }
+  media_content: { }
+#  pg_data: { }
+#  pgadmin_data: { }
+#  mongo_data: { }
+
